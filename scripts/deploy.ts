@@ -1,27 +1,32 @@
+// Import ethers from Hardhat package
 import { ethers } from "hardhat";
 
+/* 
+OrderBook deployed to: 0x8ADA82B9c7B2c48a00f49e041e7Abd3f5dd2F623
+*/
+
+const USDC_ADDRESS = "0x5a800d7e1e1C22C3a72b51AE8535B52ccBB72bC5"; // Replace with the actual USDC contract address
+
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const unlockTime = currentTimestampInSeconds + 60;
+  // This script expects the USDC address to be provided
+  // For example purposes, this could be a dummy address
 
-  const lockedAmount = ethers.parseEther("0.001");
+  // Fetch the Contract Factory for the OrderBook contract
+  const OrderBook = await ethers.getContractFactory("OrderBook");
 
-  const orderBook = await ethers.deployContract("OrderBook", [unlockTime], {
-    value: lockedAmount,
-  });
+  // Deploy the contract
+  const orderBook = await OrderBook.deploy(USDC_ADDRESS);
 
+  // Wait for the deployment to be mined
   await orderBook.waitForDeployment();
 
-  console.log(
-    `Lock with ${ethers.formatEther(
-      lockedAmount
-    )}ETH and unlock timestamp ${unlockTime} deployed to ${orderBook.target}`
-  );
+  // Log the address of the deployed contract
+  console.log("OrderBook deployed to:", await orderBook.getAddress());
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+main()
+  .then(() => process.exit(0))
+  .catch(error => {
+    console.error(error);
+    process.exit(1);
+  });
