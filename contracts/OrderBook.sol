@@ -20,16 +20,16 @@ contract OrderBook {
     uint constant FEE_RATE = 500;
     uint constant HUNDRED_PERCENT = 1000000;
 
-    enum MarketStatus {
-        Opened,
-        Paused,
-        Closed
-    }
+    // enum MarketStatus {
+    //     Opened,
+    //     Paused,
+    //     Closed
+    // }
 
     struct Market {
         address assetId;
         uint32 decimal;
-        MarketStatus status;
+        // MarketStatus status;
     }
 
     struct Order {
@@ -43,6 +43,23 @@ contract OrderBook {
     mapping(bytes32 => Order) public orders;
     mapping(address => Market) public markets;
     mapping(address => bytes32[]) public ordersByTrader;
+
+    event MarketCreateEvent(address indexed assetId, uint32 decimal);
+    event OrderCreateEvent(
+        bytes32 indexed id,
+        address indexed trader,
+        address indexed baseToken,
+        int256 baseSize,
+        uint256 orderPrice
+    );
+    event OrderChangeEvent(bytes32 indexed id, int256 baseSize);
+    event OrderRemoveEvent(bytes32 indexed id);
+    event TradeEvent(
+        address indexed baseToken,
+        address indexed matcher,
+        int256 tradeAmount,
+        uint256 price
+    );
 
     constructor(address _usdcAddress) {
         USDC_ADDRESS = _usdcAddress;
@@ -63,7 +80,7 @@ contract OrderBook {
         return x;
     }
 
-    function min(int256 a, int256 b) public pure returns (int256) {
+    function min(int256 a, int256 b) private pure returns (int256) {
         if (a < b) {
             return a;
         } else {
@@ -116,8 +133,26 @@ contract OrderBook {
         Order storage existingOrder = orders[id];
 
         if (existingOrder.trader != address(0)) {
+            if (existingOrder.baseSize * baseSize < 0) {
+                require(
+                    IERC20(baseToken).transfer(
+                        msg.sender,
+                        uint256(abs(baseSize))
+                    ),
+                    "Transfer failed"
+                );
+                uint256 scale = 10 **
+                    uint256(markets[baseToken].decimal + 9 - 6);
+                uint256 value = (uint256(abs(baseSize)) * orderPrice) / scale;
+                require(
+                    IERC20(USDC_ADDRESS).transfer(msg.sender, value),
+                    "Transfer failed"
+                );
+            }
+
             existingOrder.baseSize += baseSize;
             if (existingOrder.baseSize != 0) {
+                //todo отправлять обратно деньги если ордер в другую сторону
                 orders[id] = existingOrder;
             } else {
                 removeOrderInternal(id);
@@ -138,18 +173,33 @@ contract OrderBook {
     function removeOrder(bytes32 orderId) public {
         Order storage order = orders[orderId];
         require(order.trader == msg.sender, "Access Denied");
-
+        uint256 baseAbs = uint256(abs(order.baseSize));
+        if (order.baseSize < 0) {
+            require(
+                IERC20(order.baseToken).transfer(order.trader, baseAbs),
+                "Transfer failed"
+            );
+        } else {
+            uint256 scale = 10 **
+                uint256(markets[order.baseToken].decimal + 9 - 6);
+            uint256 tradeValue = (baseAbs * order.orderPrice) / scale;
+            require(
+                IERC20(USDC_ADDRESS).transfer(order.trader, tradeValue),
+                "Transfer failed"
+            );
+        }
         removeOrderInternal(orderId);
     }
 
-    function removeAllOrders() public {
-        address trader = msg.sender;
+    // function removeAllOrders() public {
+    //     address trader = msg.sender;
 
-        bytes32[] storage traderOrders = ordersByTrader[trader];
-        for (uint i = 0; i < traderOrders.length; i++) {
-            removeOrderInternal(traderOrders[i]);
-        }
-    }
+    //     bytes32[] storage traderOrders = ordersByTrader[trader];
+    //     for (uint i = 0; i < traderOrders.length; i++) {
+    //         removeOrderInternal(traderOrders[i]);
+    //         //todo отправлять обратно деньги
+    //     }
+    // }
 
     function modifyOrder(bytes32 orderId, int256 deltaBaseSize) private {
         Order storage order = orders[orderId];
@@ -214,18 +264,20 @@ contract OrderBook {
 
         Market memory newMarket = Market({
             assetId: assetId,
-            decimal: decimal,
-            status: MarketStatus.Opened
+            decimal: decimal
+            // status: MarketStatus.Opened
         });
 
         markets[assetId] = newMarket;
+
+        emit MarketCreateEvent(newMarket.assetId, newMarket.decimal);
     }
 
-    function pauseMarket(bytes32 baseToken) public {
-        // Implement logic to pause a market
-    }
+    // function pauseMarket(bytes32 baseToken) public {
+    //     // Implement logic to pause a market
+    // }
 
-    function unpauseMarket(bytes32 baseToken) public {
-        // Implement logic to unpause a market
-    }
+    // function unpauseMarket(bytes32 baseToken) public {
+    //     // Implement logic to unpause a market
+    // }
 }
