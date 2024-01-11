@@ -2,7 +2,7 @@
 import { ethers } from "hardhat";
 
 /* 
-OrderBook deployed to: 0x8ADA82B9c7B2c48a00f49e041e7Abd3f5dd2F623
+OrderBook deployed to: 0xD1F41537104Aa8C0841d10Dd72eaC3F9E6F1B300
 */
 
 const USDC_ADDRESS = "0x5a800d7e1e1C22C3a72b51AE8535B52ccBB72bC5"; // Replace with the actual USDC contract address

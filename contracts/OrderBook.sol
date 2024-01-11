@@ -153,10 +153,10 @@ contract OrderBook {
             existingOrder.baseSize += baseSize;
             if (existingOrder.baseSize != 0) {
                 orders[id] = existingOrder;
-                //todo event OrderChangeEvent
+                emit OrderChangeEvent(id, existingOrder.baseSize);
             } else {
                 removeOrderInternal(id);
-                //todo event OrderRemoveEvent
+                emit OrderRemoveEvent(id);
             }
         } else {
             Order memory newOrder = Order({
@@ -168,7 +168,13 @@ contract OrderBook {
             });
             orders[id] = newOrder;
             ordersByTrader[msg.sender].push(id);
-            //todo event OrderCreateEvent
+            emit OrderCreateEvent(
+                id,
+                msg.sender,
+                baseToken,
+                baseSize,
+                orderPrice
+            );
         }
     }
 
@@ -191,7 +197,7 @@ contract OrderBook {
             );
         }
         removeOrderInternal(orderId);
-        //todo emit remove order event
+        emit OrderRemoveEvent(orderId);
     }
 
     // function removeAllOrders() public {
@@ -210,10 +216,10 @@ contract OrderBook {
         int256 newOrderSize = order.baseSize + deltaBaseSize;
         if (newOrderSize < DUST) {
             removeOrderInternal(orderId);
-            //todo emit OrderRemoveEvent
+            emit OrderRemoveEvent(orderId);
         } else {
             order.baseSize = newOrderSize;
-            //todo emit OrderChangeEvent
+            emit OrderChangeEvent(orderId, newOrderSize);
         }
     }
 
@@ -260,7 +266,12 @@ contract OrderBook {
         // int256 matcherFee = (tradeValue * int256(FEE_RATE)) / int256(HUNDRED_PERCENT);
         // transferToAddress(msg.sender, matcherFee, USDC_ASSET_ID);
 
-        //todo emit TradeEvent
+        emit TradeEvent(
+            baseToken,
+            msg.sender,
+            uint256(abs(tradeAmount)),
+            orderSell.orderPrice
+        );
     }
 
     function createMarket(address assetId, uint32 decimal) public {
