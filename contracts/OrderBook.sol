@@ -57,7 +57,7 @@ contract OrderBook {
     event TradeEvent(
         address indexed baseToken,
         address indexed matcher,
-        int256 tradeAmount,
+        uint256 tradeAmount,
         uint256 price
     );
 
@@ -152,10 +152,11 @@ contract OrderBook {
 
             existingOrder.baseSize += baseSize;
             if (existingOrder.baseSize != 0) {
-                //todo отправлять обратно деньги если ордер в другую сторону
                 orders[id] = existingOrder;
+                //todo event OrderChangeEvent
             } else {
                 removeOrderInternal(id);
+                //todo event OrderRemoveEvent
             }
         } else {
             Order memory newOrder = Order({
@@ -167,6 +168,7 @@ contract OrderBook {
             });
             orders[id] = newOrder;
             ordersByTrader[msg.sender].push(id);
+            //todo event OrderCreateEvent
         }
     }
 
@@ -189,6 +191,7 @@ contract OrderBook {
             );
         }
         removeOrderInternal(orderId);
+        //todo emit remove order event
     }
 
     // function removeAllOrders() public {
@@ -207,8 +210,10 @@ contract OrderBook {
         int256 newOrderSize = order.baseSize + deltaBaseSize;
         if (newOrderSize < DUST) {
             removeOrderInternal(orderId);
+            //todo emit OrderRemoveEvent
         } else {
             order.baseSize = newOrderSize;
+            //todo emit OrderChangeEvent
         }
     }
 
@@ -254,6 +259,8 @@ contract OrderBook {
 
         // int256 matcherFee = (tradeValue * int256(FEE_RATE)) / int256(HUNDRED_PERCENT);
         // transferToAddress(msg.sender, matcherFee, USDC_ASSET_ID);
+
+        //todo emit TradeEvent
     }
 
     function createMarket(address assetId, uint32 decimal) public {
