@@ -59,6 +59,15 @@ contract OrderBook {
         uint256 price
     );
 
+    bool private locked;
+
+    modifier noReentrant() {
+        require(!locked, "No reentrancy");
+        locked = true;
+        _;
+        locked = false;
+    }
+
     constructor(address _usdcAddress) {
         USDC_ADDRESS = _usdcAddress;
     }
@@ -107,7 +116,9 @@ contract OrderBook {
         address baseToken,
         int256 baseSize,
         uint256 orderPrice
-    ) public {
+    ) public noReentrant {
+        require(orderPrice > 0, "Invalid order price");
+
         if (baseSize < 0) {
             uint256 size = uint256(abs(baseSize));
             require(
@@ -181,7 +192,7 @@ contract OrderBook {
         }
     }
 
-    function removeOrder(bytes32 orderId) public {
+    function removeOrder(bytes32 orderId) public noReentrant {
         Order storage order = orders[orderId];
         require(order.trader == msg.sender, "Access Denied");
         uint256 baseAbs = uint256(abs(order.baseSize));
@@ -241,7 +252,7 @@ contract OrderBook {
     function matchOrders(
         bytes32 orderSellId,
         bytes32 orderBuyId
-    ) public payable {
+    ) public noReentrant {
         Order storage orderSell = orders[orderSellId];
         Order storage orderBuy = orders[orderBuyId];
 
@@ -291,8 +302,9 @@ contract OrderBook {
 
     function createMarket(address assetId, uint32 decimal) public {
         require(
-            markets[assetId].assetId == address(0),
-            "Market already exists"
+            markets[assetId].assetId == address(0) ||
+                markets[assetId].decimal != 0,
+            "Market already exists or uninitialized"
         );
 
         Market memory newMarket = Market({
