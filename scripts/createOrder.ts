@@ -1,9 +1,7 @@
 
 import { ethers, artifacts } from "hardhat";
+import { BTC_ADDRESS, ORDERBOOK_ADDRESS, USDC_ADDRESS } from "./constants";
 
-const ORDERBOOK_ADDRESS = "0x5124eE51275B9C5DaD5F583F7A3d52cfD69497Af";
-const BTC_ADDRESS = "0xe766A515745ea143DF03536b5aC3c6af9E61bd29";
-const USDC_ADDRESS = "0x5a800d7e1e1C22C3a72b51AE8535B52ccBB72bC5";
 const BASE_SIZE = 1 * 1e8; // Количество базового актива (например, 1 BTC)
 const ORDER_PRICE = 45000 * 1e9; // Цена за единицу базового актива (например, 45000 USDC)
 
@@ -24,7 +22,7 @@ async function main() {
     // Создаём ордер на покупку или продажу
     let mintTx = await usdc.mint(deployer.address, 45000 * 1e6);
     await mintTx.wait();
-    await usdc.connect(deployer).approve(orderBook.getAddress(), 45000 * 1e6);
+    await (usdc.connect(deployer) as any).approve(orderBook.getAddress(), 45000 * 1e6);
     const createOrderTx = await orderBook.openOrder(BTC_ADDRESS, BASE_SIZE, ORDER_PRICE);
     await createOrderTx.wait();
 
