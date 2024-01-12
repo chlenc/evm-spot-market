@@ -45,15 +45,13 @@ contract OrderBook {
     mapping(address => bytes32[]) public ordersByTrader;
 
     event MarketCreateEvent(address indexed assetId, uint32 decimal);
-    event OrderCreateEvent(
+    event OrderChangeEvent(
         bytes32 indexed id,
         address indexed trader,
         address indexed baseToken,
         int256 baseSize,
         uint256 orderPrice
     );
-    event OrderChangeEvent(bytes32 indexed id, int256 baseSize);
-    event OrderRemoveEvent(bytes32 indexed id);
     event TradeEvent(
         address indexed baseToken,
         address indexed matcher,
@@ -153,11 +151,16 @@ contract OrderBook {
             existingOrder.baseSize += baseSize;
             if (existingOrder.baseSize != 0) {
                 orders[id] = existingOrder;
-                emit OrderChangeEvent(id, existingOrder.baseSize);
             } else {
                 removeOrderInternal(id);
-                emit OrderRemoveEvent(id);
             }
+            emit OrderChangeEvent(
+                id,
+                msg.sender,
+                baseToken,
+                existingOrder.baseSize,
+                orderPrice
+            );
         } else {
             Order memory newOrder = Order({
                 id: id,
@@ -168,7 +171,7 @@ contract OrderBook {
             });
             orders[id] = newOrder;
             ordersByTrader[msg.sender].push(id);
-            emit OrderCreateEvent(
+            emit OrderChangeEvent(
                 id,
                 msg.sender,
                 baseToken,
@@ -197,7 +200,13 @@ contract OrderBook {
             );
         }
         removeOrderInternal(orderId);
-        emit OrderRemoveEvent(orderId);
+        emit OrderChangeEvent(
+            orderId,
+            order.trader,
+            order.baseToken,
+            order.baseSize,
+            order.orderPrice
+        );
     }
 
     // function removeAllOrders() public {
@@ -215,12 +224,18 @@ contract OrderBook {
 
         int256 newOrderSize = order.baseSize + deltaBaseSize;
         if (newOrderSize < DUST) {
+            newOrderSize = 0;
             removeOrderInternal(orderId);
-            emit OrderRemoveEvent(orderId);
         } else {
             order.baseSize = newOrderSize;
-            emit OrderChangeEvent(orderId, newOrderSize);
         }
+        emit OrderChangeEvent(
+            orderId,
+            order.trader,
+            order.baseToken,
+            newOrderSize,
+            order.orderPrice
+        );
     }
 
     function matchOrders(

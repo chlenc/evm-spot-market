@@ -6,6 +6,9 @@ BTC deployed to: 0xe766A515745ea143DF03536b5aC3c6af9E61bd29
 USDC deployed to: 0x5a800d7e1e1C22C3a72b51AE8535B52ccBB72bC5
 */
 
+export const BTC_ADDRESS = "0xe766A515745ea143DF03536b5aC3c6af9E61bd29";
+export const USDC_ADDRESS = "0x5a800d7e1e1C22C3a72b51AE8535B52ccBB72bC5";
+
 async function main() {
     // Fetch the Contract Factory for the Erc20Token contract
     const Token = await ethers.getContractFactory("Erc20Token");

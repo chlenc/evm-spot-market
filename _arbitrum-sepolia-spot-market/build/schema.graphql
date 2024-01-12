@@ -9,11 +9,28 @@ type MarketCreateEvent @entity(immutable: true) {
 
 type OrderChangeEvent @entity(immutable: true) {
   id: Bytes!
-  OrderBook_id: Bytes! # bytes32
+  Orderbook_id: Bytes! # bytes32
+  baseSize: BigInt! # int256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type OrderCreateEvent @entity(immutable: true) {
+  id: Bytes!
+  Orderbook_id: Bytes! # bytes32
   trader: Bytes! # address
   baseToken: Bytes! # address
   baseSize: BigInt! # int256
   orderPrice: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type OrderRemoveEvent @entity(immutable: true) {
+  id: Bytes!
+  Orderbook_id: Bytes! # bytes32
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
