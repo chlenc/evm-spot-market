@@ -1,8 +1,7 @@
 import { ethers, artifacts } from "hardhat";
-import { BTC_ADDRESS } from "./deployTokens";
-import { ORDERBOOK_ADDRESS } from "./deploy";
 
-const BASE_ASSET_ADDRESS = BTC_ADDRESS;
+const ORDERBOOK_ADDRESS = "0x5124eE51275B9C5DaD5F583F7A3d52cfD69497Af";
+const BASE_ASSET_ADDRESS = "0xe766A515745ea143DF03536b5aC3c6af9E61bd29";
 const BASE_ASSET_DECIMALS = 8;
 
 async function main() {

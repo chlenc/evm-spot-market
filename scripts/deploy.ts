@@ -1,10 +1,9 @@
 // Import ethers from Hardhat package
 import { ethers } from "hardhat";
-import { USDC_ADDRESS } from "./deployTokens";
 /* 
 OrderBook deployed to: 0x5124eE51275B9C5DaD5F583F7A3d52cfD69497Af
 */
-export const ORDERBOOK_ADDRESS = "0x5124eE51275B9C5DaD5F583F7A3d52cfD69497Af";
+const USDC_ADDRESS = "0x5a800d7e1e1C22C3a72b51AE8535B52ccBB72bC5";
 
 async function main() {
   // This script expects the USDC address to be provided
