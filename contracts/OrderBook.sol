@@ -220,15 +220,47 @@ contract OrderBook {
         );
     }
 
-    // function removeAllOrders() public {
-    //     address trader = msg.sender;
+function removeAllOrders() public noReentrant {
+    address trader = msg.sender;
 
-    //     bytes32[] storage traderOrders = ordersByTrader[trader];
-    //     for (uint i = 0; i < traderOrders.length; i++) {
-    //         removeOrderInternal(traderOrders[i]);
-    //         //todo отправлять обратно деньги
-    //     }
-    // }
+    bytes32[] storage traderOrders = ordersByTrader[trader];
+    for (uint i = 0; i < traderOrders.length; i++) {
+        bytes32 orderId = traderOrders[i];
+        Order storage order = orders[orderId];
+
+        // Проверяем, существует ли ордер и принадлежит ли он текущему трейдеру
+        require(order.trader == trader, "Access Denied");
+
+        // Вычисляем абсолютное значение размера ордера
+        uint256 baseAbs = uint256(abs(order.baseSize));
+
+        // Если ордер на продажу (baseSize < 0), возвращаем токены базового актива
+        if (order.baseSize < 0) {
+            require(
+                IERC20(order.baseToken).transfer(trader, baseAbs),
+                "Transfer failed"
+            );
+        } else {
+            // Если ордер на покупку, вычисляем стоимость в USDC и возвращаем ее
+            uint256 scale = 10 ** uint256(markets[order.baseToken].decimal + 9 - 6);
+            uint256 tradeValue = (baseAbs * order.orderPrice) / scale;
+            require(
+                IERC20(USDC_ADDRESS).transfer(trader, tradeValue),
+                "Transfer failed"
+            );
+        }
+
+        removeOrderInternal(orderId);
+
+        emit OrderChangeEvent(
+            orderId,
+            order.trader,
+            order.baseToken,
+            order.baseSize,
+            order.orderPrice
+        );
+    }
+}
 
     function modifyOrder(bytes32 orderId, int256 deltaBaseSize) private {
         Order storage order = orders[orderId];

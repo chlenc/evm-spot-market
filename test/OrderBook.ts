@@ -96,6 +96,43 @@ describe("OrderBook Contract", function () {
     expect(await usdc.balanceOf(alice.address)).to.equal(45000 * 1e6);
   });
 
+  it("cancel order test with multiple orders", async function () {
+    // Инициализация кошельков
+    const [admin, alice] = await ethers.getSigners();
+
+    // Развёртывание токенов
+    const Token = await ethers.getContractFactory("Erc20Token", admin);
+    const btc = await Token.deploy("Bitcoin", "BTC");
+    const usdc = await Token.deploy("USD Coin", "USDC");
+    const [btcAddress, usdcAddress] = await Promise.all([btc.getAddress(), usdc.getAddress()]);
+
+    // Развёртывание OrderBook
+    const OrderBook = await ethers.getContractFactory("OrderBook", admin);
+    const orderBook = await OrderBook.deploy(usdcAddress);
+
+    // Создание рынка BTC/USDC
+    await orderBook.createMarket(btcAddress, 8);
+
+    // Alice минтит USDC и создаёт заказ на покупку BTC
+    const price = 45000 * 1e9;
+    await usdc.mint(alice.address, 45000 * 1e6);
+    await usdc.connect(alice).approve(orderBook.getAddress(), 45000 * 1e6);
+    await orderBook.connect(alice).openOrder(btcAddress, 1 * 1e8, price);
+
+    // Alice открывает еще один заказ
+    await usdc.connect(alice).approve(orderBook.getAddress(), 45000 * 1e6);
+    await orderBook.connect(alice).openOrder(btcAddress, 0.5 * 1e8, price);
+
+    // Alice отменяет все заказы
+    await orderBook.connect(alice).removeAllOrders();
+
+    // Проверка баланса Alice
+    expect(await usdc.balanceOf(alice.address)).to.equal(45000 * 1e6);
+
+    // Проверка отсутствия ордеров у Alice
+    const aliceOrdersAfter = await orderBook.ordersByTrader(alice.address, 0);
+    expect(aliceOrdersAfter.length).to.equal(0);
+  });
 
 });
 
