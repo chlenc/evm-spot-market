@@ -97,5 +97,55 @@ describe("OrderBook Contract", function () {
   });
 
 
+  it("expand orders test", async function () {
+    // Инициализация кошельков
+    const [admin, alice] = await ethers.getSigners();
+
+    // Развёртывание токенов
+    const Token = await ethers.getContractFactory("Erc20Token", admin);
+    const btc = await Token.deploy("Bitcoin", "BTC");
+    const usdc = await Token.deploy("USD Coin", "USDC");
+    const [btcAddress, usdcAddress] = await Promise.all([btc.getAddress(), usdc.getAddress()]);
+
+    // Развёртывание OrderBook
+    const OrderBook = await ethers.getContractFactory("OrderBook", admin);
+    const orderBook = await OrderBook.deploy(usdcAddress);
+
+    // Создание рынка BTC/USDC
+    await orderBook.createMarket(btcAddress, 8);
+
+    const price = 45000 * 1e9;
+
+    await usdc.mint(alice.address, 45000 * 1e6);
+    await usdc.connect(alice).approve(orderBook.getAddress(), 45000 * 1e6);
+    await orderBook.connect(alice).openOrder(btcAddress, 0.5 * 1e8, price);
+    await orderBook.connect(alice).openOrder(btcAddress, 0.5 * 1e8, price);
+
+
+    expect((await orderBook.orders(await orderBook.ordersByTrader(alice.address, 0)))[3]).to.equal(1 * 1e8);
+
+    await btc.mint(alice.address, 1 * 1e8);
+    await btc.connect(alice).approve(orderBook.getAddress(), 1 * 1e8);
+    await orderBook.connect(alice).openOrder(btcAddress, -0.5 * 1e8, price);
+    expect((await orderBook.orders(await orderBook.ordersByTrader(alice.address, 0)))[3]).to.equal(0.5 * 1e8);
+
+    await btc.connect(alice).approve(orderBook.getAddress(), 1 * 1e8);
+    await orderBook.connect(alice).openOrder(btcAddress, -0.5 * 1e8, price);
+
+
+    await btc.mint(alice.address, 1 * 1e8);
+    await btc.connect(alice).approve(orderBook.getAddress(), 1 * 1e8);
+    await orderBook.connect(alice).openOrder(btcAddress, -0.5 * 1e8, price);
+    await orderBook.connect(alice).openOrder(btcAddress, -0.5 * 1e8, price);
+    expect((await orderBook.orders(await orderBook.ordersByTrader(alice.address, 0)))[3]).to.equal(-1 * 1e8);
+
+
+    await usdc.mint(alice.address, 45000 * 1e6);
+    await usdc.connect(alice).approve(orderBook.getAddress(), 45000 * 1e6);
+
+    await orderBook.connect(alice).openOrder(btcAddress, 0.5 * 1e8, price);
+    expect((await orderBook.orders(await orderBook.ordersByTrader(alice.address, 0)))[3]).to.equal(-0.5 * 1e8);
+
+  });
 });
 

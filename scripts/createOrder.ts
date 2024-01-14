@@ -18,13 +18,22 @@ async function main() {
     // Создание экземпляра токена USDC
     const usdcArtifact = await artifacts.readArtifact("Erc20Token");
     const usdc = new ethers.Contract(USDC_ADDRESS, usdcArtifact.abi, deployer);
+    const btc = new ethers.Contract(BTC_ADDRESS, usdcArtifact.abi, deployer);
 
     // Создаём ордер на покупку или продажу
-    let mintTx = await usdc.mint(deployer.address, 45000 * 1e6);
-    await mintTx.wait();
-    await (usdc.connect(deployer) as any).approve(orderBook.getAddress(), 45000 * 1e6);
-    const createOrderTx = await orderBook.openOrder(BTC_ADDRESS, BASE_SIZE, ORDER_PRICE);
-    await createOrderTx.wait();
+    if (BASE_SIZE > 0) {
+        let mintTx = await usdc.mint(deployer.address, ORDER_PRICE / 1e9 * 1e6);
+        await mintTx.wait();
+        await (usdc.connect(deployer) as any).approve(orderBook.getAddress(), ORDER_PRICE / 1e9 * 1e6);
+        const createOrderTx = await orderBook.openOrder(BTC_ADDRESS, BASE_SIZE, ORDER_PRICE);
+        await createOrderTx.wait();
+    } else {
+        let mintTx = await btc.mint(deployer.address, BASE_SIZE * -1);
+        await mintTx.wait();
+        await (btc.connect(deployer) as any).approve(orderBook.getAddress(), BASE_SIZE * -1);
+        const createOrderTx = await orderBook.openOrder(BTC_ADDRESS, BASE_SIZE, ORDER_PRICE);
+        await createOrderTx.wait();
+    }
 
     console.log("Order created successfully");
 }
