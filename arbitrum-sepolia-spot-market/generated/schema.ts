@@ -371,6 +371,19 @@ export class Order extends Entity {
   set isActive(value: boolean) {
     this.set("isActive", Value.fromBoolean(value));
   }
+
+  get blockTimestamp(): BigInt {
+    let value = this.get("blockTimestamp");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set blockTimestamp(value: BigInt) {
+    this.set("blockTimestamp", Value.fromBigInt(value));
+  }
 }
 
 export class TradeEvent extends Entity {

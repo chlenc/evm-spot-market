@@ -19,6 +19,17 @@ type OrderChangeEvent @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
+
+type Order @entity {
+  id: ID!
+  trader: Bytes! # address
+  baseToken: Bytes! # address
+  baseSize: BigInt! # int256
+  orderPrice: BigInt! # uint256
+  isActive: Boolean! # Для отслеживания активности ордера
+  blockTimestamp: BigInt!
+}
+
 type TradeEvent @entity(immutable: true) {
   id: Bytes!
   baseToken: Bytes! # address
