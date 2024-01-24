@@ -127,7 +127,7 @@
     ],
     "name": "matchOrders",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {

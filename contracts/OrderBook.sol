@@ -44,19 +44,25 @@ contract OrderBook {
     mapping(address => Market) public markets;
     mapping(address => bytes32[]) public ordersByTrader;
 
-    event MarketCreateEvent(address indexed assetId, uint32 decimal);
+    event MarketCreateEvent(
+        address indexed assetId,
+        uint32 decimal,
+        uint256 timestamp
+    );
     event OrderChangeEvent(
         bytes32 indexed id,
         address indexed trader,
         address indexed baseToken,
         int256 baseSize,
-        uint256 orderPrice
+        uint256 orderPrice,
+        uint256 timestamp
     );
     event TradeEvent(
         address indexed baseToken,
         address indexed matcher,
         uint256 tradeAmount,
-        uint256 price
+        uint256 price,
+        uint256 timestamp
     );
 
     bool private locked;
@@ -170,7 +176,8 @@ contract OrderBook {
                 msg.sender,
                 baseToken,
                 existingOrder.baseSize,
-                orderPrice
+                orderPrice,
+                block.timestamp
             );
         } else {
             Order memory newOrder = Order({
@@ -187,7 +194,8 @@ contract OrderBook {
                 msg.sender,
                 baseToken,
                 baseSize,
-                orderPrice
+                orderPrice,
+                block.timestamp
             );
         }
     }
@@ -216,7 +224,8 @@ contract OrderBook {
             order.trader,
             order.baseToken,
             order.baseSize,
-            order.orderPrice
+            order.orderPrice,
+            block.timestamp
         );
     }
 
@@ -245,7 +254,8 @@ contract OrderBook {
             order.trader,
             order.baseToken,
             newOrderSize,
-            order.orderPrice
+            order.orderPrice,
+            block.timestamp
         );
     }
 
@@ -273,9 +283,9 @@ contract OrderBook {
 
         address baseToken = orderSell.baseToken;
 
+        uint256 price = orderSell.orderPrice;
         uint256 scale = 10 ** uint256(markets[baseToken].decimal + 9 - 6);
-        uint256 tradeValue = (uint256(abs(tradeAmount)) *
-            orderSell.orderPrice) / scale;
+        uint256 tradeValue = (uint256(abs(tradeAmount)) * price) / scale;
 
         require(
             IERC20(baseToken).transfer(orderBuy.trader, uint256(tradeAmount)),
@@ -296,7 +306,8 @@ contract OrderBook {
             baseToken,
             msg.sender,
             uint256(abs(tradeAmount)),
-            orderSell.orderPrice
+            price,
+            block.timestamp
         );
     }
 
@@ -315,7 +326,11 @@ contract OrderBook {
 
         markets[assetId] = newMarket;
 
-        emit MarketCreateEvent(newMarket.assetId, newMarket.decimal);
+        emit MarketCreateEvent(
+            newMarket.assetId,
+            newMarket.decimal,
+            block.timestamp
+        );
     }
 
     // function pauseMarket(bytes32 baseToken) public {

@@ -1,0 +1,18 @@
+{
+  "name": "arbitrum-sepolia-spot-market",
+  "license": "UNLICENSED",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ arbitrum-sepolia-spot-market",
+    "create-local": "graph create --node http://localhost:8020/ arbitrum-sepolia-spot-market",
+    "remove-local": "graph remove --node http://localhost:8020/ arbitrum-sepolia-spot-market",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 arbitrum-sepolia-spot-market",
+    "test": "graph test"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.65.0",
+    "@graphprotocol/graph-ts": "0.32.0"
+  },
+  "devDependencies": { "matchstick-as": "0.5.0" }
+}

@@ -7,10 +7,10 @@ async function main() {
   // For example purposes, this could be a dummy address
 
   // Fetch the Contract Factory for the OrderBook contract
-  const OrderBook = await ethers.getContractFactory("OrderBook");
+  const OrderBookFactory = await ethers.getContractFactory("OrderBook");
 
   // Deploy the contract
-  const orderBook = await OrderBook.deploy(USDC_ADDRESS);
+  const orderBook = await OrderBookFactory.deploy(USDC_ADDRESS);
 
   // Wait for the deployment to be mined
   await orderBook.waitForDeployment();

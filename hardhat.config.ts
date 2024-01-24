@@ -3,8 +3,12 @@ import "@nomicfoundation/hardhat-toolbox";
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-if (process.env.PRIVATE_KEY == null) {
-  throw new Error("No PRIVATE_KEY in .env file")
+if (process.env.ADMIN_PRIVATE_KEY == null) {
+  throw new Error("No ADMIN_PRIVATE_KEY in .env file")
+}
+
+if (process.env.ALICE_PRIVATE_KEY == null) {
+  throw new Error("No ALICE_PRIVATE_KEY in .env file")
 }
 
 const config: HardhatUserConfig = {
@@ -16,7 +20,7 @@ const config: HardhatUserConfig = {
     arbitrumSepolia: {
       url: 'https://sepolia-rollup.arbitrum.io/rpc',
       chainId: 421614,
-      accounts: [process.env.PRIVATE_KEY!]
+      accounts: [process.env.ADMIN_PRIVATE_KEY!, process.env.ALICE_PRIVATE_KEY!]
     },
   },
 
