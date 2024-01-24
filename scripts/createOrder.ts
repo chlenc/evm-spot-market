@@ -7,30 +7,30 @@ const ORDER_PRICE = 41000 * 1e9; // Цена за единицу базовог�
 
 async function main() {
     // Получаем подписывающего
-    const [deployer] = await ethers.getSigners();
+    const [caller] = await ethers.getSigners();
 
     // Получаем ABI контракта OrderBook
     const contractArtifact = await artifacts.readArtifact("OrderBook");
 
     // Создаём экземпляр контракта OrderBook с подписывающим
-    const orderBook = new ethers.Contract(ORDERBOOK_ADDRESS, contractArtifact.abi, deployer);
+    const orderBook = new ethers.Contract(ORDERBOOK_ADDRESS, contractArtifact.abi, caller);
 
     // Создание экземпляра токена USDC
     const usdcArtifact = await artifacts.readArtifact("Erc20Token");
-    const usdc = new ethers.Contract(USDC_ADDRESS, usdcArtifact.abi, deployer);
-    const btc = new ethers.Contract(BTC_ADDRESS, usdcArtifact.abi, deployer);
+    const usdc = new ethers.Contract(USDC_ADDRESS, usdcArtifact.abi, caller);
+    const btc = new ethers.Contract(BTC_ADDRESS, usdcArtifact.abi, caller);
 
     // Создаём ордер на покупку или продажу
     if (BASE_SIZE > 0) {
-        let mintTx = await usdc.mint(deployer.address, ORDER_PRICE / 1e9 * 1e6);
+        let mintTx = await usdc.mint(caller.address, ORDER_PRICE / 1e9 * 1e6);
         await mintTx.wait();
-        await (usdc.connect(deployer) as any).approve(orderBook.getAddress(), ORDER_PRICE / 1e9 * 1e6);
+        await (usdc.connect(caller) as any).approve(orderBook.getAddress(), ORDER_PRICE / 1e9 * 1e6);
         const createOrderTx = await orderBook.openOrder(BTC_ADDRESS, BASE_SIZE, ORDER_PRICE);
         await createOrderTx.wait();
     } else {
-        let mintTx = await btc.mint(deployer.address, BASE_SIZE * -1);
+        let mintTx = await btc.mint(caller.address, BASE_SIZE * -1);
         await mintTx.wait();
-        await (btc.connect(deployer) as any).approve(orderBook.getAddress(), BASE_SIZE * -1);
+        await (btc.connect(caller) as any).approve(orderBook.getAddress(), BASE_SIZE * -1);
         const createOrderTx = await orderBook.openOrder(BTC_ADDRESS, BASE_SIZE, ORDER_PRICE);
         await createOrderTx.wait();
     }
