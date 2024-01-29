@@ -21,10 +21,10 @@ dataSources:
         - name: OrderBook
           file: ./abis/OrderBook.json
       eventHandlers:
-        - event: MarketCreateEvent(indexed address,uint32,uint256)
+        - event: MarketCreateEvent(indexed address,uint32)
           handler: handleMarketCreateEvent
-        - event: OrderChangeEvent(indexed bytes32,indexed address,indexed address,int256,uint256,uint256)
+        - event: OrderChangeEvent(indexed bytes32,indexed address,indexed address,int256,uint256)
           handler: handleOrderChangeEvent
-        - event: TradeEvent(indexed address,indexed address,uint256,uint256,uint256)
+        - event: TradeEvent(indexed address,indexed address,uint256,uint256)
           handler: handleTradeEvent
       file: ./src/order-book.ts

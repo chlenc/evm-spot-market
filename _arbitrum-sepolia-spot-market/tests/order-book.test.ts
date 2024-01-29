@@ -21,11 +21,9 @@ describe("Describe entity assertions", () => {
       "0x0000000000000000000000000000000000000001"
     )
     let decimal = BigInt.fromI32(234)
-    let timestamp = BigInt.fromI32(234)
     let newMarketCreateEventEvent = createMarketCreateEventEvent(
       assetId,
-      decimal,
-      timestamp
+      decimal
     )
     handleMarketCreateEvent(newMarketCreateEventEvent)
   })
@@ -51,12 +49,6 @@ describe("Describe entity assertions", () => {
       "MarketCreateEvent",
       "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
       "decimal",
-      "234"
-    )
-    assert.fieldEquals(
-      "MarketCreateEvent",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
-      "timestamp",
       "234"
     )
 

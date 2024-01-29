@@ -20,12 +20,6 @@
         "internalType": "uint32",
         "name": "decimal",
         "type": "uint32"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
       }
     ],
     "name": "MarketCreateEvent",
@@ -63,12 +57,6 @@
         "internalType": "uint256",
         "name": "orderPrice",
         "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
       }
     ],
     "name": "OrderChangeEvent",
@@ -99,12 +87,6 @@
         "indexed": false,
         "internalType": "uint256",
         "name": "price",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
         "type": "uint256"
       }
     ],

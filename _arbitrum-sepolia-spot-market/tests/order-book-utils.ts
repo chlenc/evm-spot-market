@@ -8,8 +8,7 @@ import {
 
 export function createMarketCreateEventEvent(
   assetId: Address,
-  decimal: BigInt,
-  timestamp: BigInt
+  decimal: BigInt
 ): MarketCreateEvent {
   let marketCreateEventEvent = changetype<MarketCreateEvent>(newMockEvent())
 
@@ -24,12 +23,6 @@ export function createMarketCreateEventEvent(
       ethereum.Value.fromUnsignedBigInt(decimal)
     )
   )
-  marketCreateEventEvent.parameters.push(
-    new ethereum.EventParam(
-      "timestamp",
-      ethereum.Value.fromUnsignedBigInt(timestamp)
-    )
-  )
 
   return marketCreateEventEvent
 }
@@ -39,8 +32,7 @@ export function createOrderChangeEventEvent(
   trader: Address,
   baseToken: Address,
   baseSize: BigInt,
-  orderPrice: BigInt,
-  timestamp: BigInt
+  orderPrice: BigInt
 ): OrderChangeEvent {
   let orderChangeEventEvent = changetype<OrderChangeEvent>(newMockEvent())
 
@@ -67,12 +59,6 @@ export function createOrderChangeEventEvent(
       ethereum.Value.fromUnsignedBigInt(orderPrice)
     )
   )
-  orderChangeEventEvent.parameters.push(
-    new ethereum.EventParam(
-      "timestamp",
-      ethereum.Value.fromUnsignedBigInt(timestamp)
-    )
-  )
 
   return orderChangeEventEvent
 }
@@ -81,8 +67,7 @@ export function createTradeEventEvent(
   baseToken: Address,
   matcher: Address,
   tradeAmount: BigInt,
-  price: BigInt,
-  timestamp: BigInt
+  price: BigInt
 ): TradeEvent {
   let tradeEventEvent = changetype<TradeEvent>(newMockEvent())
 
@@ -102,12 +87,6 @@ export function createTradeEventEvent(
   )
   tradeEventEvent.parameters.push(
     new ethereum.EventParam("price", ethereum.Value.fromUnsignedBigInt(price))
-  )
-  tradeEventEvent.parameters.push(
-    new ethereum.EventParam(
-      "timestamp",
-      ethereum.Value.fromUnsignedBigInt(timestamp)
-    )
   )
 
   return tradeEventEvent

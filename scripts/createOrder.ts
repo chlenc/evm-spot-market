@@ -2,12 +2,12 @@
 import { ethers, artifacts } from "hardhat";
 import { BTC_ADDRESS, ORDERBOOK_ADDRESS, USDC_ADDRESS } from "./constants";
 
-const BASE_SIZE = -1 * 1e8; // Количество базового актива (например, 1 BTC)
+const BASE_SIZE = 1 * 1e8; // Количество базового актива (например, 1 BTC)
 const ORDER_PRICE = 41000 * 1e9; // Цена за единицу базового актива (например, 45000 USDC)
 
 async function main() {
     // Получаем подписывающего
-    const [caller] = await ethers.getSigners();
+    const [_,caller] = await ethers.getSigners();
 
     // Получаем ABI контракта OrderBook
     const contractArtifact = await artifacts.readArtifact("OrderBook");
