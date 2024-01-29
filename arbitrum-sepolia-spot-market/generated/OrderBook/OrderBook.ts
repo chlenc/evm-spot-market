@@ -30,6 +30,10 @@ export class MarketCreateEvent__Params {
   get decimal(): BigInt {
     return this._event.parameters[1].value.toBigInt();
   }
+
+  get timestamp(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
 }
 
 export class OrderChangeEvent extends ethereum.Event {
@@ -64,6 +68,10 @@ export class OrderChangeEvent__Params {
   get orderPrice(): BigInt {
     return this._event.parameters[4].value.toBigInt();
   }
+
+  get timestamp(): BigInt {
+    return this._event.parameters[5].value.toBigInt();
+  }
 }
 
 export class TradeEvent extends ethereum.Event {
@@ -93,6 +101,10 @@ export class TradeEvent__Params {
 
   get price(): BigInt {
     return this._event.parameters[3].value.toBigInt();
+  }
+
+  get timestamp(): BigInt {
+    return this._event.parameters[4].value.toBigInt();
   }
 }
 

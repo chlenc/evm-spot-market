@@ -1,3 +1,4 @@
+import { BigInt } from "@graphprotocol/graph-ts"
 import {
   MarketCreateEvent as MarketCreateEventEvent,
   OrderChangeEvent as OrderChangeEventEvent,
@@ -6,7 +7,8 @@ import {
 import {
   MarketCreateEvent,
   OrderChangeEvent,
-  TradeEvent
+  TradeEvent, 
+  Order
 } from "../generated/schema"
 
 export function handleMarketCreateEvent(event: MarketCreateEventEvent): void {
@@ -15,7 +17,6 @@ export function handleMarketCreateEvent(event: MarketCreateEventEvent): void {
   )
   entity.assetId = event.params.assetId
   entity.decimal = event.params.decimal
-  entity.timestamp = event.params.timestamp
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -33,14 +34,29 @@ export function handleOrderChangeEvent(event: OrderChangeEventEvent): void {
   entity.baseToken = event.params.baseToken
   entity.baseSize = event.params.baseSize
   entity.orderPrice = event.params.orderPrice
-  entity.timestamp = event.params.timestamp
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
   entity.transactionHash = event.transaction.hash
 
   entity.save()
+
+  let orderId = event.params.id.toHex();
+  let order = Order.load(orderId);
+
+  if (!order) {
+    order = new Order(orderId);
+  }
+
+  order.trader = event.params.trader;
+  order.baseToken = event.params.baseToken;
+  order.baseSize = event.params.baseSize;
+  order.orderPrice = event.params.orderPrice;
+  order.isActive = event.params.baseSize != BigInt.zero(); // Проверка на активность
+  order.blockTimestamp = event.block.timestamp;
+  order.save();
 }
+
 
 export function handleTradeEvent(event: TradeEventEvent): void {
   let entity = new TradeEvent(
@@ -50,7 +66,6 @@ export function handleTradeEvent(event: TradeEventEvent): void {
   entity.matcher = event.params.matcher
   entity.tradeAmount = event.params.tradeAmount
   entity.price = event.params.price
-  entity.timestamp = event.params.timestamp
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
