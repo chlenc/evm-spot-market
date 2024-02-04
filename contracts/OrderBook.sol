@@ -20,16 +20,10 @@ contract OrderBook {
     uint constant FEE_RATE = 500;
     uint constant HUNDRED_PERCENT = 1000000;
 
-    // enum MarketStatus {
-    //     Opened,
-    //     Paused,
-    //     Closed
-    // }
 
     struct Market {
         address assetId;
         uint32 decimal;
-        // MarketStatus status;
     }
 
     struct Order {
