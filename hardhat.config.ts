@@ -18,8 +18,7 @@ const config: HardhatUserConfig = {
       chainId: 1337,
     },
     arbitrumSepolia: {
-      // url: 'https://sepolia-rollup.arbitrum.io/rpc',
-      url: 'https://arbitrum-sepolia.blockpi.network/v1/rpc/public',
+      url: 'https://arbitrum-sepolia.infura.io/v3/c9c23a966a0e4064b925cb2d6783e679',
       chainId: 421614,
       accounts: [process.env.ADMIN_PRIVATE_KEY!, process.env.ALICE_PRIVATE_KEY!]
     },
