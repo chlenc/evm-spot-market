@@ -1,0 +1,31 @@
+specVersion: 0.0.5
+schema:
+  file: schema.graphql
+dataSources:
+  - kind: ethereum
+    name: OrderBook
+    network: arbitrum-sepolia
+    source:
+      address: "0xE57B37774D718ED379157CDd356492232FA9aE7e"
+      abi: OrderBook
+      startBlock: 10450624
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - MarketCreateEvent
+        - OrderChangeEvent
+        - TradeEvent
+      abis:
+        - name: OrderBook
+          file: OrderBook/abis/OrderBook.json
+      eventHandlers:
+        - event: MarketCreateEvent(indexed address,uint32,uint256)
+          handler: handleMarketCreateEvent
+        - event: OrderChangeEvent(indexed bytes32,indexed address,indexed
+            address,int256,uint256,uint256)
+          handler: handleOrderChangeEvent
+        - event: TradeEvent(indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleTradeEvent
+      file: OrderBook/OrderBook.wasm

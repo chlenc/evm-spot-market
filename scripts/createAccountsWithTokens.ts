@@ -1,7 +1,7 @@
 import { ethers, artifacts } from "hardhat";
 import { BTC_ADDRESS, USDC_ADDRESS } from "./constants";
 
-const AMOUNT = 500;
+const AMOUNT = 100;
 
 
 async function main() {

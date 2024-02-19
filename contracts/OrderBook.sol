@@ -20,7 +20,6 @@ contract OrderBook {
     uint constant FEE_RATE = 500;
     uint constant HUNDRED_PERCENT = 1000000;
 
-
     struct Market {
         address assetId;
         uint32 decimal;
@@ -53,11 +52,14 @@ contract OrderBook {
     );
     event TradeEvent(
         address indexed baseToken,
-        address indexed matcher,
+        address matcher,
+        address indexed seller,
+        address indexed buyer,
         uint256 tradeAmount,
         uint256 price,
         uint256 timestamp
     );
+    event LogMessage(int256 message);
 
     bool private locked;
 
@@ -237,7 +239,7 @@ contract OrderBook {
         Order storage order = orders[orderId];
 
         int256 newOrderSize = order.baseSize + deltaBaseSize;
-        if (newOrderSize < DUST) {
+        if (abs(newOrderSize) < DUST) {
             newOrderSize = 0;
             removeOrderInternal(orderId);
         } else {
@@ -274,7 +276,6 @@ contract OrderBook {
             abs(orderSell.baseSize),
             abs(orderBuy.baseSize)
         );
-
         address baseToken = orderSell.baseToken;
 
         uint256 price = orderSell.orderPrice;
@@ -285,6 +286,15 @@ contract OrderBook {
             IERC20(baseToken).transfer(orderBuy.trader, uint256(tradeAmount)),
             "Transfer failed"
         );
+        if (orderBuy.orderPrice > orderSell.orderPrice) {
+            uint256 diff = (uint256(abs(tradeAmount)) * orderBuy.orderPrice) /
+                scale -
+                tradeValue;
+            require(
+                IERC20(USDC_ADDRESS).transfer(orderBuy.trader, diff),
+                "Transfer failed"
+            );
+        }
         modifyOrder(orderBuyId, -tradeAmount);
 
         require(
@@ -299,6 +309,8 @@ contract OrderBook {
         emit TradeEvent(
             baseToken,
             msg.sender,
+            orderSell.trader,
+            orderBuy.trader,
             uint256(abs(tradeAmount)),
             price,
             block.timestamp

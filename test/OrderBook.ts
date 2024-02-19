@@ -10,7 +10,8 @@ describe("OrderBook Contract", function () {
 
     //deploy tokens
     const Token = await ethers.getContractFactory("Erc20Token", admin);
-    const [btc, usdc] = await Promise.all([Token.deploy("Bitcoin", "BTC"), Token.deploy("USD Coin", "USDC")]);
+    const btc = await Token.deploy("Bitcoin", "BTC", 8);
+    const usdc = await Token.deploy("USD Coin", "USDC", 9);
     const [btcAddress, usdcAddress] = await Promise.all([btc.getAddress(), usdc.getAddress()]);
 
     //deploy orderbook (second asset id USDC by default)
@@ -48,8 +49,8 @@ describe("OrderBook Contract", function () {
 
     // Развёртывание токенов
     const Token = await ethers.getContractFactory("Erc20Token", admin);
-    const btc = await Token.deploy("Bitcoin", "BTC");
-    const usdc = await Token.deploy("USD Coin", "USDC");
+    const btc = await Token.deploy("Bitcoin", "BTC", 8);
+    const usdc = await Token.deploy("USD Coin", "USDC", 9);
     const [btcAddress, usdcAddress] = await Promise.all([btc.getAddress(), usdc.getAddress()]);
 
     // Развёртывание OrderBook
@@ -103,8 +104,8 @@ describe("OrderBook Contract", function () {
 
     // Развёртывание токенов
     const Token = await ethers.getContractFactory("Erc20Token", admin);
-    const btc = await Token.deploy("Bitcoin", "BTC");
-    const usdc = await Token.deploy("USD Coin", "USDC");
+    const btc = await Token.deploy("Bitcoin", "BTC", 8);
+    const usdc = await Token.deploy("USD Coin", "USDC", 9);
     const [btcAddress, usdcAddress] = await Promise.all([btc.getAddress(), usdc.getAddress()]);
 
     // Развёртывание OrderBook

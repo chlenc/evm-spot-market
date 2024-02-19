@@ -2,8 +2,8 @@
 import { ethers, artifacts } from "hardhat";
 import { BTC_ADDRESS, ORDERBOOK_ADDRESS, USDC_ADDRESS } from "./constants";
 
-const BASE_SIZE = 0.5 * 1e8; // Количество базового актива (например, 1 BTC)
-const ORDER_PRICE = 41100 * 1e9; // Цена за единицу базового актива (например, 45000 USDC)
+const BASE_SIZE = -0.5 * 1e8; // Количество базового актива (например, 1 BTC)
+const ORDER_PRICE = 38100 * 1e9; // Цена за единицу базового актива (например, 45000 USDC)
 
 async function main() {
     // Получаем подписывающего

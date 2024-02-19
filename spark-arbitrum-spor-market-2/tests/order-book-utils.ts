@@ -1,0 +1,135 @@
+import { newMockEvent } from "matchstick-as"
+import { ethereum, BigInt, Address, Bytes } from "@graphprotocol/graph-ts"
+import {
+  LogMessage,
+  MarketCreateEvent,
+  OrderChangeEvent,
+  TradeEvent
+} from "../generated/OrderBook/OrderBook"
+
+export function createLogMessageEvent(message: BigInt): LogMessage {
+  let logMessageEvent = changetype<LogMessage>(newMockEvent())
+
+  logMessageEvent.parameters = new Array()
+
+  logMessageEvent.parameters.push(
+    new ethereum.EventParam("message", ethereum.Value.fromSignedBigInt(message))
+  )
+
+  return logMessageEvent
+}
+
+export function createMarketCreateEventEvent(
+  assetId: Address,
+  decimal: BigInt,
+  timestamp: BigInt
+): MarketCreateEvent {
+  let marketCreateEventEvent = changetype<MarketCreateEvent>(newMockEvent())
+
+  marketCreateEventEvent.parameters = new Array()
+
+  marketCreateEventEvent.parameters.push(
+    new ethereum.EventParam("assetId", ethereum.Value.fromAddress(assetId))
+  )
+  marketCreateEventEvent.parameters.push(
+    new ethereum.EventParam(
+      "decimal",
+      ethereum.Value.fromUnsignedBigInt(decimal)
+    )
+  )
+  marketCreateEventEvent.parameters.push(
+    new ethereum.EventParam(
+      "timestamp",
+      ethereum.Value.fromUnsignedBigInt(timestamp)
+    )
+  )
+
+  return marketCreateEventEvent
+}
+
+export function createOrderChangeEventEvent(
+  id: Bytes,
+  trader: Address,
+  baseToken: Address,
+  baseSize: BigInt,
+  orderPrice: BigInt,
+  timestamp: BigInt
+): OrderChangeEvent {
+  let orderChangeEventEvent = changetype<OrderChangeEvent>(newMockEvent())
+
+  orderChangeEventEvent.parameters = new Array()
+
+  orderChangeEventEvent.parameters.push(
+    new ethereum.EventParam("id", ethereum.Value.fromFixedBytes(id))
+  )
+  orderChangeEventEvent.parameters.push(
+    new ethereum.EventParam("trader", ethereum.Value.fromAddress(trader))
+  )
+  orderChangeEventEvent.parameters.push(
+    new ethereum.EventParam("baseToken", ethereum.Value.fromAddress(baseToken))
+  )
+  orderChangeEventEvent.parameters.push(
+    new ethereum.EventParam(
+      "baseSize",
+      ethereum.Value.fromSignedBigInt(baseSize)
+    )
+  )
+  orderChangeEventEvent.parameters.push(
+    new ethereum.EventParam(
+      "orderPrice",
+      ethereum.Value.fromUnsignedBigInt(orderPrice)
+    )
+  )
+  orderChangeEventEvent.parameters.push(
+    new ethereum.EventParam(
+      "timestamp",
+      ethereum.Value.fromUnsignedBigInt(timestamp)
+    )
+  )
+
+  return orderChangeEventEvent
+}
+
+export function createTradeEventEvent(
+  baseToken: Address,
+  matcher: Address,
+  seller: Address,
+  buyer: Address,
+  tradeAmount: BigInt,
+  price: BigInt,
+  timestamp: BigInt
+): TradeEvent {
+  let tradeEventEvent = changetype<TradeEvent>(newMockEvent())
+
+  tradeEventEvent.parameters = new Array()
+
+  tradeEventEvent.parameters.push(
+    new ethereum.EventParam("baseToken", ethereum.Value.fromAddress(baseToken))
+  )
+  tradeEventEvent.parameters.push(
+    new ethereum.EventParam("matcher", ethereum.Value.fromAddress(matcher))
+  )
+  tradeEventEvent.parameters.push(
+    new ethereum.EventParam("seller", ethereum.Value.fromAddress(seller))
+  )
+  tradeEventEvent.parameters.push(
+    new ethereum.EventParam("buyer", ethereum.Value.fromAddress(buyer))
+  )
+  tradeEventEvent.parameters.push(
+    new ethereum.EventParam(
+      "tradeAmount",
+      ethereum.Value.fromUnsignedBigInt(tradeAmount)
+    )
+  )
+  tradeEventEvent.parameters.push(
+    new ethereum.EventParam("price", ethereum.Value.fromUnsignedBigInt(price))
+  )
+  tradeEventEvent.parameters.push(
+    new ethereum.EventParam(
+      "timestamp",
+      ethereum.Value.fromUnsignedBigInt(timestamp)
+    )
+  )
+
+  return tradeEventEvent
+}
