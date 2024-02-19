@@ -10,19 +10,6 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "int256",
-        "name": "message",
-        "type": "int256"
-      }
-    ],
-    "name": "LogMessage",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
         "indexed": true,
         "internalType": "address",
         "name": "assetId",

@@ -1,11 +1,3 @@
-type LogMessage @entity(immutable: true) {
-  id: Bytes!
-  message: BigInt! # int256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
 type MarketCreateEvent @entity(immutable: true) {
   id: Bytes!
   assetId: Bytes! # address

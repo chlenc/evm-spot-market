@@ -1,28 +1,13 @@
 import {
-  LogMessage as LogMessageEvent,
   MarketCreateEvent as MarketCreateEventEvent,
   OrderChangeEvent as OrderChangeEventEvent,
   TradeEvent as TradeEventEvent
 } from "../generated/OrderBook/OrderBook"
 import {
-  LogMessage,
   MarketCreateEvent,
   OrderChangeEvent,
   TradeEvent
 } from "../generated/schema"
-
-export function handleLogMessage(event: LogMessageEvent): void {
-  let entity = new LogMessage(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.message = event.params.message
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
 
 export function handleMarketCreateEvent(event: MarketCreateEventEvent): void {
   let entity = new MarketCreateEvent(

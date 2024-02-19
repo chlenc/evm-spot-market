@@ -59,7 +59,6 @@ contract OrderBook {
         uint256 price,
         uint256 timestamp
     );
-    event LogMessage(int256 message);
 
     bool private locked;
 

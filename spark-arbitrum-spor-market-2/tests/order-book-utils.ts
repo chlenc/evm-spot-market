@@ -1,23 +1,10 @@
 import { newMockEvent } from "matchstick-as"
-import { ethereum, BigInt, Address, Bytes } from "@graphprotocol/graph-ts"
+import { ethereum, Address, BigInt, Bytes } from "@graphprotocol/graph-ts"
 import {
-  LogMessage,
   MarketCreateEvent,
   OrderChangeEvent,
   TradeEvent
 } from "../generated/OrderBook/OrderBook"
-
-export function createLogMessageEvent(message: BigInt): LogMessage {
-  let logMessageEvent = changetype<LogMessage>(newMockEvent())
-
-  logMessageEvent.parameters = new Array()
-
-  logMessageEvent.parameters.push(
-    new ethereum.EventParam("message", ethereum.Value.fromSignedBigInt(message))
-  )
-
-  return logMessageEvent
-}
 
 export function createMarketCreateEventEvent(
   assetId: Address,
