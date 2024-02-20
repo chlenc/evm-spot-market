@@ -6,9 +6,9 @@ dataSources:
     name: OrderBook
     network: arbitrum-sepolia
     source:
-      address: "0xE57B37774D718ED379157CDd356492232FA9aE7e"
+      address: "0x0DD4699013537cf77668E8461a6A1862Fa8cb5F5"
       abi: OrderBook
-      startBlock: 10450624
+      startBlock: 15679513
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -26,6 +26,7 @@ dataSources:
         - event: OrderChangeEvent(indexed bytes32,indexed address,indexed
             address,int256,uint256,uint256)
           handler: handleOrderChangeEvent
-        - event: TradeEvent(indexed address,indexed address,uint256,uint256,uint256)
+        - event: TradeEvent(indexed address,address,indexed address,indexed
+            address,uint256,uint256,uint256)
           handler: handleTradeEvent
       file: OrderBook/OrderBook.wasm

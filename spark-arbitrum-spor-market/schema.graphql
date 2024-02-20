@@ -2,7 +2,6 @@ type MarketCreateEvent @entity(immutable: true) {
   id: Bytes!
   assetId: Bytes! # address
   decimal: BigInt! # uint32
-  timestamp: BigInt! # uint256
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
@@ -15,10 +14,20 @@ type OrderChangeEvent @entity(immutable: true) {
   baseToken: Bytes! # address
   baseSize: BigInt! # int256
   orderPrice: BigInt! # uint256
-  timestamp: BigInt! # uint256
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
+}
+
+
+type Order @entity {
+  id: ID!
+  trader: Bytes! # address
+  baseToken: Bytes! # address
+  baseSize: BigInt! # int256
+  orderPrice: BigInt! # uint256
+  isActive: Boolean! # Для отслеживания активности ордера
+  blockTimestamp: BigInt!
 }
 
 type TradeEvent @entity(immutable: true) {

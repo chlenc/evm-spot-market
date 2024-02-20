@@ -34,8 +34,11 @@ type TradeEvent @entity(immutable: true) {
   id: Bytes!
   baseToken: Bytes! # address
   matcher: Bytes! # address
+  seller: Bytes! # address
+  buyer: Bytes! # address
   tradeAmount: BigInt! # uint256
   price: BigInt! # uint256
+  timestamp: BigInt! # uint256
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

@@ -95,16 +95,24 @@ export class TradeEvent__Params {
     return this._event.parameters[1].value.toAddress();
   }
 
+  get seller(): Address {
+    return this._event.parameters[2].value.toAddress();
+  }
+
+  get buyer(): Address {
+    return this._event.parameters[3].value.toAddress();
+  }
+
   get tradeAmount(): BigInt {
-    return this._event.parameters[2].value.toBigInt();
+    return this._event.parameters[4].value.toBigInt();
   }
 
   get price(): BigInt {
-    return this._event.parameters[3].value.toBigInt();
+    return this._event.parameters[5].value.toBigInt();
   }
 
   get timestamp(): BigInt {
-    return this._event.parameters[4].value.toBigInt();
+    return this._event.parameters[6].value.toBigInt();
   }
 }
 
