@@ -80,6 +80,8 @@ export function createOrderChangeEventEvent(
 export function createTradeEventEvent(
   baseToken: Address,
   matcher: Address,
+  seller: Address,
+  buyer: Address,
   tradeAmount: BigInt,
   price: BigInt,
   timestamp: BigInt
@@ -93,6 +95,12 @@ export function createTradeEventEvent(
   )
   tradeEventEvent.parameters.push(
     new ethereum.EventParam("matcher", ethereum.Value.fromAddress(matcher))
+  )
+  tradeEventEvent.parameters.push(
+    new ethereum.EventParam("seller", ethereum.Value.fromAddress(seller))
+  )
+  tradeEventEvent.parameters.push(
+    new ethereum.EventParam("buyer", ethereum.Value.fromAddress(buyer))
   )
   tradeEventEvent.parameters.push(
     new ethereum.EventParam(
