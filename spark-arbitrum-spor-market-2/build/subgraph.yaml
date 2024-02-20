@@ -1,6 +1,6 @@
 specVersion: 0.0.5
 schema:
-  file: ./schema.graphql
+  file: schema.graphql
 dataSources:
   - kind: ethereum
     name: OrderBook
@@ -19,12 +19,14 @@ dataSources:
         - TradeEvent
       abis:
         - name: OrderBook
-          file: ./abis/OrderBook.json
+          file: OrderBook/abis/OrderBook.json
       eventHandlers:
         - event: MarketCreateEvent(indexed address,uint32,uint256)
           handler: handleMarketCreateEvent
-        - event: OrderChangeEvent(indexed bytes32,indexed address,indexed address,int256,uint256,uint256)
+        - event: OrderChangeEvent(indexed bytes32,indexed address,indexed
+            address,int256,uint256,uint256)
           handler: handleOrderChangeEvent
-        - event: TradeEvent(indexed address,address,indexed address,indexed address,uint256,uint256,uint256)
+        - event: TradeEvent(indexed address,address,indexed address,indexed
+            address,uint256,uint256,uint256)
           handler: handleTradeEvent
-      file: ./src/order-book.ts
+      file: OrderBook/OrderBook.wasm
