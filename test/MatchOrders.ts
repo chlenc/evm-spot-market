@@ -55,7 +55,10 @@ describe("Match orders Test", function () {
 
     //match orders
     let [aliceOrderId, bobOrderId] = await Promise.all([orderBook.ordersByTrader(aliceAddress, 0), orderBook.ordersByTrader(bobAddress, 0)]);
-    await orderBook.matchOrders(bobOrderId, aliceOrderId);
+    let tx = await orderBook.matchOrders(bobOrderId, aliceOrderId);
+    await tx.wait();
+    // await printLogs(tx.hash, ["TradeEvent"]);
+
 
     // Проверяем, что у Alice есть 1 BTC после совершения сделки
     expect(await btc.balanceOf(aliceAddress)).to.equal(1 * 1e8);
@@ -90,7 +93,10 @@ describe("Match orders Test", function () {
     let [aliceOrderId, bobOrderId] = await Promise.all([orderBook.ordersByTrader(aliceAddress, 0), orderBook.ordersByTrader(bobAddress, 0)]);
     // console.log(await orderBook.orders(aliceOrderId))
     // console.log(await orderBook.orders(bobOrderId))
-    await orderBook.matchOrders(bobOrderId, aliceOrderId);
+    let tx = await orderBook.matchOrders(bobOrderId, aliceOrderId);
+    await tx.wait();
+    // await printLogs(tx.hash, ["TradeEvent"]);
+
 
     // Проверяем, что у Alice есть 1 BTC после совершения сделки
     expect(await btc.balanceOf(aliceAddress)).to.equal(1 * 1e8);
@@ -123,7 +129,10 @@ describe("Match orders Test", function () {
     expect(await usdc.balanceOf(aliceAddress)).to.equal(0);
     //match orders
     let [aliceOrderId, bobOrderId] = await Promise.all([orderBook.ordersByTrader(aliceAddress, 0), orderBook.ordersByTrader(bobAddress, 0)]);
-    await orderBook.matchOrders(bobOrderId, aliceOrderId);
+    let tx = await orderBook.matchOrders(bobOrderId, aliceOrderId);
+    await tx.wait();
+    // await printLogs(tx.hash, ["TradeEvent"]);
+
 
     // Проверяем, что у Alice есть 1 BTC после совершения сделки
     expect(await btc.balanceOf(aliceAddress)).to.equal(1 * 1e8);
@@ -222,7 +231,10 @@ describe("Match orders Test", function () {
 
     //match orders
     let [aliceOrderId, bobOrderId] = await Promise.all([orderBook.ordersByTrader(aliceAddress, 0), orderBook.ordersByTrader(bobAddress, 0)]);
-    await orderBook.matchOrders(bobOrderId, aliceOrderId);
+    let tx = await orderBook.matchOrders(bobOrderId, aliceOrderId);
+    await tx.wait();
+    // await printLogs(tx.hash, ["TradeEvent"]);
+
   })
 
   it("✅ buyOrder.orderPrice = sellOrder.orderPrice & buyOrder.baseSize < sellOrder.baseSize", async function () {
@@ -243,7 +255,10 @@ describe("Match orders Test", function () {
 
     //match orders
     let [aliceOrderId, bobOrderId] = await Promise.all([orderBook.ordersByTrader(aliceAddress, 0), orderBook.ordersByTrader(bobAddress, 0)]);
-    await orderBook.matchOrders(bobOrderId, aliceOrderId);
+    let tx = await orderBook.matchOrders(bobOrderId, aliceOrderId);
+    await tx.wait();
+    // await printLogs(tx.hash, ["TradeEvent"]);
+
 
     // Проверяем, что у Alice есть 1 BTC после совершения сделки
     expect(await btc.balanceOf(aliceAddress)).to.equal(1 * 1e8);
@@ -272,7 +287,10 @@ describe("Match orders Test", function () {
 
     //match orders
     let [aliceOrderId, bobOrderId] = await Promise.all([orderBook.ordersByTrader(aliceAddress, 0), orderBook.ordersByTrader(bobAddress, 0)]);
-    await orderBook.matchOrders(bobOrderId, aliceOrderId);
+    let tx = await orderBook.matchOrders(bobOrderId, aliceOrderId);
+    await tx.wait();
+    // await printLogs(tx.hash, ["TradeEvent"]);
+
 
     //check if alice have 1 BTC
     expect(await btc.balanceOf(alice)).to.equal(1 * 1e8);
@@ -292,20 +310,25 @@ describe("Match orders Test", function () {
   });
 
 
+  const printLogs = async (hash: string, events?: string[]) => {
+    const receipt = await ethers.provider.getTransactionReceipt(hash);
+    const iface = new ethers.Interface(orderBook.interface.format());
+    for (const log of receipt!.logs) {
+      try {
+        const parsedLog = iface.parseLog(log as any);
+        if (parsedLog == null) continue;
+        if (events != null && !events.includes(parsedLog.name)) continue;
+        const { name, args } = parsedLog
+        console.log({ name, args });
+
+      } catch (error) {
+        console.error(`Error parsing log: ${log}`, error);
+      }
+    }
+
+  }
+
 });
 
 
 
-const printLogs = async (tx: any, orderBook: any) => {
-  const receipt = await ethers.provider.getTransactionReceipt(tx.hash);
-  const iface = new ethers.Interface(orderBook.interface.format());
-  for (const log of receipt!.logs) {
-    try {
-      const parsedLog: any = iface.parseLog(log as any);
-      console.log(parsedLog);
-    } catch (error) {
-      console.error(`Error parsing log: ${log}`, error);
-    }
-  }
-
-}

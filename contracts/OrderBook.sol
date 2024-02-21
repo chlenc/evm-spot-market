@@ -281,8 +281,11 @@ contract OrderBook {
         uint256 scale = 10 ** uint256(markets[baseToken].decimal + 9 - 6);
         uint256 tradeValue = (uint256(abs(tradeAmount)) * price) / scale;
 
+        address orderBuyTrader = orderBuy.trader;
+        address orderSellTrader = orderSell.trader;
+
         require(
-            IERC20(baseToken).transfer(orderBuy.trader, uint256(tradeAmount)),
+            IERC20(baseToken).transfer(orderBuyTrader, uint256(tradeAmount)),
             "Transfer failed"
         );
         if (orderBuy.orderPrice > orderSell.orderPrice) {
@@ -290,14 +293,14 @@ contract OrderBook {
                 scale -
                 tradeValue;
             require(
-                IERC20(USDC_ADDRESS).transfer(orderBuy.trader, diff),
+                IERC20(USDC_ADDRESS).transfer(orderBuyTrader, diff),
                 "Transfer failed"
             );
         }
         modifyOrder(orderBuyId, -tradeAmount);
 
         require(
-            IERC20(USDC_ADDRESS).transfer(orderSell.trader, tradeValue),
+            IERC20(USDC_ADDRESS).transfer(orderSellTrader, tradeValue),
             "Transfer failed"
         );
         modifyOrder(orderSellId, tradeAmount);
@@ -308,8 +311,8 @@ contract OrderBook {
         emit TradeEvent(
             baseToken,
             msg.sender,
-            orderSell.trader,
-            orderBuy.trader,
+            orderSellTrader,
+            orderBuyTrader,
             uint256(abs(tradeAmount)),
             price,
             block.timestamp

@@ -1,7 +1,7 @@
 {
   "arbitrum-sepolia": {
     "OrderBook": {
-      "address": "0x0DD4699013537cf77668E8461a6A1862Fa8cb5F5",
+      "address": "0x6326d3AF2612a45F054D05f9cFf60B37338a59c0",
       "startBlock": 15679513
     }
   }
