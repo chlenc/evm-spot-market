@@ -117,7 +117,7 @@ contract OrderBook {
         address baseToken,
         int256 baseSize,
         uint256 orderPrice
-    ) public noReentrant {
+    ) public noReentrant returns (bytes32) {
         require(orderPrice > 0, "Invalid order price");
 
         if (baseSize < 0) {
@@ -193,6 +193,8 @@ contract OrderBook {
                 block.timestamp
             );
         }
+
+        return id;
     }
 
     function removeOrder(bytes32 orderId) public noReentrant {
