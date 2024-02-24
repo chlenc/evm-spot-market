@@ -1,8 +1,9 @@
 import { ethers, artifacts } from "hardhat";
-import { BTC_ADDRESS, ORDERBOOK_ADDRESS } from "./constants";
+import { UNI_ADDRESS, ORDERBOOK_ADDRESS } from "./constants";
 
-const BASE_ASSET_ADDRESS = BTC_ADDRESS;
-const BASE_ASSET_DECIMALS = 8;
+const BASE_ASSET_ADDRESS = UNI_ADDRESS;
+const BASE_ASSET_DECIMALS = 9;
+
 
 async function main() {
   // Получаем первый аккаунт из списка доступных аккаунтов
